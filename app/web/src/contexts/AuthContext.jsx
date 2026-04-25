@@ -1,6 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import pb from '@/lib/pocketbaseClient';
 
 const AuthContext = createContext(null);
 
@@ -18,15 +16,15 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (pb.authStore.isValid) {
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      const storedUser = localStorage.getItem('videovault_user');
+      if (storedUser) {
         try {
-          // Attempt to refresh the auth token
-          await pb.collection('users').authRefresh();
-          setCurrentUser(pb.authStore.record);
-        } catch (error) {
-          // Token is likely invalid or expired
-          pb.authStore.clear();
-          setCurrentUser(null);
+          setCurrentUser(JSON.parse(storedUser));
+        } catch (e) {
+          localStorage.removeItem('videovault_user');
         }
       }
       setInitialLoading(false);
@@ -35,35 +33,41 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    try {
-      const authData = await pb.collection('users').authWithPassword(email, password);
-      setCurrentUser(authData.record);
-      return authData;
-    } catch (error) {
-      throw new Error(error.message || 'Login failed');
-    }
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // In a real app, you'd check passwords against a stored DB.
+    // Here we just simulate login by trusting the email.
+    const user = {
+      id: email, // Using email as unique ID for simulation
+      email: email,
+      name: email.split('@')[0]
+    };
+    
+    localStorage.setItem('videovault_user', JSON.stringify(user));
+    setCurrentUser(user);
+    return { record: user };
   };
 
   const signup = async (email, password, passwordConfirm, name) => {
-    try {
-      const record = await pb.collection('users').create({
-        email,
-        password,
-        passwordConfirm,
-        name: name || ''
-      });
-      
-      await pb.collection('users').authWithPassword(email, password);
-      setCurrentUser(pb.authStore.record);
-      
-      return record;
-    } catch (error) {
-      throw new Error(error.message || 'Signup failed');
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    if (password !== passwordConfirm) {
+      throw new Error("Passwords do not match");
     }
+
+    const user = {
+      id: email,
+      email: email,
+      name: name || email.split('@')[0]
+    };
+    
+    localStorage.setItem('videovault_user', JSON.stringify(user));
+    setCurrentUser(user);
+    return user;
   };
 
   const logout = () => {
-    pb.authStore.clear();
+    localStorage.removeItem('videovault_user');
     setCurrentUser(null);
   };
 

@@ -15,35 +15,37 @@ import TermsOfServicePage from '@/pages/TermsOfServicePage.jsx';
 import { AuthProvider } from '@/contexts/AuthContext.jsx';
 import PrivateRoute from '@/components/PrivateRoute.jsx';
 import { Toaster } from '@/components/ui/sonner';
-
+import { ThemeProvider } from '@/components/ThemeProvider';
 import ErrorBoundary from '@/components/ErrorBoundary.jsx';
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <ScrollToTop />
-        <ErrorBoundary>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/privacy" element={<PrivacyPolicyPage />} />
-            <Route path="/terms" element={<TermsOfServicePage />} />
-            
-            <Route element={<PrivateRoute />}>
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/playlists" element={<PlaylistsPage />} />
-              <Route path="/playlists/:id" element={<PlaylistDetailsPage />} />
-              <Route path="/save-video" element={<SaveVideoPage />} />
-              <Route path="/notes" element={<NotesPage />} />
-              <Route path="/video/:id" element={<VideoDetailsPage />} />
-            </Route>
-          </Routes>
-        </ErrorBoundary>
-        <Toaster />
-      </AuthProvider>
-    </Router>
+    <ThemeProvider defaultTheme="dark" storageKey="videovault-theme">
+      <Router>
+        <AuthProvider>
+          <ScrollToTop />
+          <ErrorBoundary>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/privacy" element={<PrivacyPolicyPage />} />
+              <Route path="/terms" element={<TermsOfServicePage />} />
+              
+              <Route element={<PrivateRoute />}>
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/playlists" element={<PlaylistsPage />} />
+                <Route path="/playlists/:id" element={<PlaylistDetailsPage />} />
+                <Route path="/save-video" element={<SaveVideoPage />} />
+                <Route path="/notes" element={<NotesPage />} />
+                <Route path="/video/:id" element={<VideoDetailsPage />} />
+              </Route>
+            </Routes>
+          </ErrorBoundary>
+          <Toaster />
+        </AuthProvider>
+      </Router>
+    </ThemeProvider>
   );
 }
 

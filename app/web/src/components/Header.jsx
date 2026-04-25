@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Video, Menu, X, LogOut, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext.jsx';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const Header = () => {
   const location = useLocation();
@@ -58,6 +59,7 @@ const Header = () => {
                 </>
               )}
             </div>
+            <ThemeToggle />
             <Button
               variant="ghost"
               size="icon"
